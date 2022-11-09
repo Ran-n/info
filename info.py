@@ -3,11 +3,12 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/11/09 20:59:20.693663
-#+ Editado:	2022/11/09 22:52:04.315289
+#+ Editado:	2022/11/10 00:10:30.434700
 # ------------------------------------------------------------------------------
 
 import sys
 import ffmpeg
+import pathlib
 from datetime import datetime
 
 from uteis.imprimir import jprint
@@ -16,10 +17,11 @@ def video(info):
     duracion_s, duracion_ms = str(info['format']['duration']).split('.')
     dic_return = {
             'data': str(datetime.now()),
-            'nome fich': info['format']['filename'].split('/')[-1],
-            'duracion': duracion_s + duracion_ms.rstrip('0'),
-            'tamanho': info['format']['size'],
-            'bit rate': info['format']['bit_rate'],
+            'nome fich': pathlib.Path(info['format']['filename']).stem,
+            'extension': pathlib.Path(info['format']['filename']).suffix,
+            'duracion': duracion_s + duracion_ms.rstrip('0') + ' s',
+            'tamanho': info['format']['size'] + ' B',
+            'bit rate': info['format']['bit_rate'] + ' b/s',
     }
 
     streams = []
@@ -33,17 +35,17 @@ def video(info):
             stream_dic['calidade'] = str(stream['width']) + 'x' + str(stream['height'])
             stream_dic['ratio aspecto'] = stream['sample_aspect_ratio']
             stream_dic['formato de pixel'] = stream['pix_fmt']
-            stream_dic['frame rate'] = round(eval(stream['avg_frame_rate']), 2)
+            stream_dic['frame rate'] = str(round(eval(stream['avg_frame_rate']), 2)) + ' fps'
 
         else:
             stream_dic['lingua'] = stream['tags']['language']
             if stream['codec_type'] == 'audio':
-                stream_dic['sample rate'] = stream['sample_rate']
-                stream_dic['bit rate'] = stream['bit_rate']
+                stream_dic['bit rate'] = stream['bit_rate'] + ' b/s'
+                stream_dic['sample rate'] = stream['sample_rate'] + ' Hz'
                 stream_dic['canles'] = stream['channel_layout'].split('(')[0]
 
             elif stream['codec_type'] == 'subtitle':
-                stream_dic['duracion'] = stream['duration_ts']
+                stream_dic['duracion'] = str(stream['duration_ts']) + ' s'
 
         streams.append(stream_dic)
 
