@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/11/09 20:59:20.693663
-#+ Editado:	2022/11/10 00:10:30.434700
+#+ Editado:	2022/11/10 19:27:00.139806
 # ------------------------------------------------------------------------------
 
 import sys
@@ -13,7 +13,9 @@ from datetime import datetime
 
 from uteis.imprimir import jprint
 
-def video(info):
+def video(ficheiro):
+    info = ffmpeg.probe(ficheiro)
+
     duracion_s, duracion_ms = str(info['format']['duration']).split('.')
     dic_return = {
             'data': str(datetime.now()),
@@ -52,17 +54,28 @@ def video(info):
     dic_return['streams'] = streams
     return dic_return
 
-def main(ficheiro):
-    try:
-        info = ffmpeg.probe(ficheiro)
-    except Exception as e:
-        print(e)
-        print('Non é un video')
+def erro_sufixo(ficheiro):
+    return f'A extensión do ficheiro "{ficheiro}" non se atopa considerada.'
 
-    return video(info)
+def main(ficheiro):
+    extensions = {
+        '.mkv': video,
+        '.mp4': video,
+    }
+
+    try:
+        funcion = extensions[pathlib.Path(ficheiro).suffix]
+    except KeyError:
+        funcion = erro_sufixo
+
+    return funcion(ficheiro)
 
 if __name__ == "__main__":
     if (len(sys.argv) > 1):
-        jprint(main(sys.argv[1]))
+        saida = main(sys.argv[1])
+        if (type(saida) == str):
+            print(saida)
+        else:
+            jprint(saida)
     else:
         print('Mete argumento')
