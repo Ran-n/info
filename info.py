@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/11/09 20:59:20.693663
-#+ Editado:	2022/11/12 12:19:14.638527
+#+ Editado:	2022/11/12 13:09:33.045500
 # ------------------------------------------------------------------------------
 
 import sys
@@ -46,7 +46,7 @@ def video(ficheiro):
                 stream_dic['canles'] = stream['channel_layout'].split('(')[0]
 
             elif stream['codec_type'] == 'subtitle':
-                stream_dic['duracion'] = str(stream['duration_ts']) + ' s'
+                stream_dic['duracion'] = str(float(stream['duration'])) + ' s'
 
         streams.append(stream_dic)
 
