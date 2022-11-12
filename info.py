@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/11/09 20:59:20.693663
-#+ Editado:	2022/11/10 19:27:00.139806
+#+ Editado:	2022/11/12 12:19:14.638527
 # ------------------------------------------------------------------------------
 
 import sys
@@ -16,12 +16,11 @@ from uteis.imprimir import jprint
 def video(ficheiro):
     info = ffmpeg.probe(ficheiro)
 
-    duracion_s, duracion_ms = str(info['format']['duration']).split('.')
     dic_return = {
             'data': str(datetime.now()),
             'nome fich': pathlib.Path(info['format']['filename']).stem,
             'extension': pathlib.Path(info['format']['filename']).suffix,
-            'duracion': duracion_s + duracion_ms.rstrip('0') + ' s',
+            'duracion': str(float(info['format']['duration'])) + ' s',
             'tamanho': info['format']['size'] + ' B',
             'bit rate': info['format']['bit_rate'] + ' b/s',
     }
