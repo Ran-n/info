@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/11/09 20:59:20.693663
-#+ Editado:	2022/11/12 13:09:33.045500
+#+ Editado:	2022/11/13 22:23:33.082968
 # ------------------------------------------------------------------------------
 
 import sys
@@ -33,20 +33,20 @@ def video(ficheiro):
         }
 
         if stream['codec_type'] == 'video':
-            stream_dic['calidade'] = str(stream['width']) + 'x' + str(stream['height'])
-            stream_dic['ratio aspecto'] = stream['sample_aspect_ratio']
-            stream_dic['formato de pixel'] = stream['pix_fmt']
-            stream_dic['frame rate'] = str(round(eval(stream['avg_frame_rate']), 2)) + ' fps'
+            if stream.get('width') and stream.get('height'): stream_dic['calidade'] = str(stream['width']) + 'x' + str(stream['height'])
+            if stream.get('sample_aspect_ratio'): stream_dic['ratio aspecto'] = stream['sample_aspect_ratio']
+            if stream.get('pix_fmt'): stream_dic['formato de pixel'] = stream['pix_fmt']
+            if stream.get('avg_frame_rate'): stream_dic['frame rate'] = str(round(eval(stream['avg_frame_rate']), 2)) + ' fps'
 
         else:
-            stream_dic['lingua'] = stream['tags']['language']
+            if stream.get('tags').get('language'): stream_dic['lingua'] = stream['tags']['language']
             if stream['codec_type'] == 'audio':
-                stream_dic['bit rate'] = stream['bit_rate'] + ' b/s'
-                stream_dic['sample rate'] = stream['sample_rate'] + ' Hz'
-                stream_dic['canles'] = stream['channel_layout'].split('(')[0]
+                if stream.get('bit_rate'): stream_dic['bit rate'] = stream['bit_rate'] + ' b/s'
+                if stream.get('sample_rate'): stream_dic['sample rate'] = stream['sample_rate'] + ' Hz'
+                if stream.get('channel_layout'): stream_dic['canles'] = stream['channel_layout'].split('(')[0]
 
             elif stream['codec_type'] == 'subtitle':
-                stream_dic['duracion'] = str(float(stream['duration'])) + ' s'
+                if stream.get('duration'): stream_dic['duracion'] = str(float(stream['duration'])) + ' s'
 
         streams.append(stream_dic)
 
