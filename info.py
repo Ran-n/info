@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/11/09 20:59:20.693663
-#+ Editado:	2022/12/29 01:33:13.133578
+#+ Editado:	2022/12/29 01:40:55.384517
 # ------------------------------------------------------------------------------
 
 import sys
@@ -68,7 +68,35 @@ def video(ficheiro):
     return dic_return
 
 def audio(ficheiro):
-    print(ffmpeg.probe(ficheiro))
+    info = ffmpeg.probe(ficheiro)
+
+    dic_return = {
+            'data': str(datetime.now()),
+            'nome fich': pathlib.Path(info['format']['filename']).stem,
+            'extension': pathlib.Path(info['format']['filename']).suffix,
+            }
+
+    audios = []
+    for stream in info['streams']:
+        stream_dic = {
+                'tipo': stream['codec_type'],
+                'codec': stream['codec_name'],
+        }
+
+        #if stream.get('tags').get('language'): stream_dic['lingua'] = stream['tags']['language']
+        if stream['codec_type'] == 'audio':
+            if stream.get('sample_rate'): stream_dic['sample rate'] = stream['sample_rate'] + ' Hz'
+            if stream.get('bit_rate'): stream_dic['bit rate'] = stream['bit_rate'] + ' b/s'
+            if stream.get('channel_layout'): stream_dic['canles'] = stream['channel_layout'].split('(')[0]
+
+        elif stream['codec_type'] == 'subtitle':
+            if stream.get('duration'): stream_dic['duracion'] = str(float(stream['duration'])) + ' s'
+
+        audios.append(stream_dic)
+
+    dic_return['audios'] = audios
+
+    return dic_return
 
 def erro_sufixo(ficheiro):
     return f'A extensión do ficheiro "{ficheiro}" non se atopa considerada.'
@@ -78,6 +106,7 @@ def main(ficheiro):
         '.mkv': video,
         '.mp4': video,
         '.flac': audio,
+        '.eac3': audio,
     }
 
     try:
