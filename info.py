@@ -3,12 +3,13 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2022/12/29 23:42:41.989905
+#+ Editado:	2022/12/30 00:31:19.596872
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
 import pathlib
 from datetime import datetime
+from dateutil import parser
 from typing import List, Union
 
 from uteis.imprimir import jprint
@@ -35,51 +36,49 @@ def get_lingua(lingua: str) -> str:
     }
 
     return formato_lingua(dic_linguas.get(lingua, 'ERRO: Engadir lingua'))
-# ------------------------------------------------------------------------------
+
 def hms2s(tempo: str) -> str:
     h, m, s = tempo.split(':')
     s, ms = str(float(s)).split('.')
     return str(int(h)*60*60+int(m)*60+int(s))+'.'+ms
+
+def get_codec(codec: str) -> Union[str, None]:
+    codec_types= {
+            'video': 'videos',
+            'audio': 'audios',
+            'subtitle': 'subtitulos',
+    }
+
+    try:
+        return codec_types[codec]
+    except KeyError as e:
+        raise Exception(f'Non existe o codec "{codec}".') from e
 # ------------------------------------------------------------------------------
 def canle(datos: dict, stream: dict) -> dict:
-    codec_types= {
-            'video': [video, 'videos'],
-            'audio': [audio, 'audios'],
-            'subtitle': [subtitulo, 'subtitulos'],
-    }
     nova_canle = {}
 
+    try:
+        tags = stream['tags']
+    except:
+        tags = None
+
+    codec = get_codec(stream['codec_type'])
+
+    # Posición
+    if ('index' in stream):
+        nova_canle['Posición'] = stream['index'] + 1
     # Codec
     if ('codec_name' in stream):
         nova_canle['Codec'] = stream['codec_name']
     # Índice
     if ('codec_long_name' in stream):
         nova_canle['Codec nome'] = stream['codec_long_name']
-    # Índice
-    if ('index' in stream):
-        nova_canle['Índice'] = stream['index']
-
-    try:
-        codec_types[stream['codec_type']][0](nova_canle, stream)
-    except KeyError:
-        print(f'AVISO: Erro no codec "{stream["codec_type"]}".')
-        pass
-    else:
-        codec = codec_types[stream['codec_type']][1]
-        # non existe a lista dos streams crear
-        if (codec not in datos):
-            datos[codec] = []
-        # meter nova canle
-        datos[codec].append(nova_canle)
-
-    return datos
-
-def video(nova_canle: dict, stream: dict):
-    try:
-        tags = stream['tags']
-    except:
-        tags = None
-
+    # Nome
+    if (tags and 'title' in tags):
+        nova_canle['Nome'] = tags['title']
+    # Lingua
+    if (tags and 'language' in tags):
+        nova_canle['Lingua'] = get_lingua(tags['language'])
     # Calidade
     if (('width' in stream) and ('height' in stream)):
         nova_canle['calidade'] = str(stream['width']) + 'x' + str(stream['height'])
@@ -93,35 +92,12 @@ def video(nova_canle: dict, stream: dict):
     if ('pix_fmt' in stream):
         nova_canle['Formato de pixel'] = stream['pix_fmt']
     # Frame Rate
-    if ('avg_frame_rate' in stream):
+    if ((stream['codec_type'] == 'video') and ('avg_frame_rate' in stream)):
         numerador, divisor = [int(ele) for ele in stream['avg_frame_rate'].split('/')]
         if (divisor == 0):
             nova_canle['Frame Rate'] = stream['avg_frame_rate'].split('/')[0] + ' fps'
         else:
             nova_canle['Frame Rate'] = str(round(numerador/divisor, 2)) + ' fps'
-    # Inicio
-    if ('start_time' in stream):
-        nova_canle['Inicio'] = str(float(stream['start_time'])) + ' s'
-    # Fin
-    if (tags and 'DURATION' in tags):
-        nova_canle['Fin'] = hms2s(tags['DURATION']) + ' s'
-
-    # disposition
-
-    return nova_canle
-
-def audio(nova_canle: dict, stream: dict):
-    try:
-        tags = stream['tags']
-    except:
-        tags = None
-
-    # Lingua
-    if (tags and 'language' in tags):
-        nova_canle['Lingua'] = get_lingua(tags['language'])
-    # Nome audio
-    if (tags and 'title' in tags):
-        nova_canle['Nome audio'] = tags['title']
     # Canles
     if ('channel_layout' in stream):
         nova_canle['Canles'] = " (".join(stream['channel_layout'].split('('))
@@ -143,13 +119,18 @@ def audio(nova_canle: dict, stream: dict):
     # Fin
     if (tags and 'DURATION' in tags):
         nova_canle['Fin'] = hms2s(tags['DURATION']) + ' s'
+    if ('duration' in stream):
+        nova_canle['Fin'] = stream['duration'] + ' s'
 
     # disposition
 
-    return nova_canle
+    # non existe a lista dos streams crear
+    if (codec not in datos):
+        datos[codec] = []
+    # meter nova canle
+    datos[codec].append(nova_canle)
 
-def subtitulo(nova_canle: dict, stream: dict):
-    return nova_canle
+    return datos
 # ------------------------------------------------------------------------------
 def main(fich: str) -> dict:
     datos = {
@@ -163,7 +144,7 @@ def main(fich: str) -> dict:
     except:
         formato = None
     try:
-        tags = info['tags']
+        tags = formato['tags']
     except:
         tags = None
 
@@ -188,6 +169,10 @@ def main(fich: str) -> dict:
     # Título
     if (tags and 'title' in tags):
         datos['Título'] = tags['title']
+    # Data creación
+    if (tags and 'creation_time' in tags):
+        #datos['Data creación'] = ' '.join(str(tags['creation_time']).split('T'))
+        datos['Data creación'] = str(parser.parse(tags['creation_time']))
     # Cantidade de canles
     if (formato and 'nb_streams' in formato):
         datos['Cantidade de canles'] = formato['nb_streams']

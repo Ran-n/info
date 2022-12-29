@@ -1,3 +1,4 @@
 ffmpeg==1.4
 ffmpeg_python==0.2.0
+python_dateutil==2.8.2
 uteis==0.1.2.2
