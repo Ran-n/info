@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/11/09 20:59:20.693663
-#+ Editado:	2022/12/17 18:42:23.865524
+#+ Editado:	2022/12/29 01:33:13.133578
 # ------------------------------------------------------------------------------
 
 import sys
@@ -25,7 +25,9 @@ def video(ficheiro):
             'bit rate': info['format']['bit_rate'] + ' b/s',
     }
 
-    streams = []
+    videos = []
+    audios = []
+    subtitles = []
     for stream in info['streams']:
         stream_dic = {
                 'tipo': stream['codec_type'],
@@ -53,9 +55,16 @@ def video(ficheiro):
             elif stream['codec_type'] == 'subtitle':
                 if stream.get('duration'): stream_dic['duracion'] = str(float(stream['duration'])) + ' s'
 
-        streams.append(stream_dic)
+        if stream['codec_type'] == 'video':
+            videos.append(stream_dic)
+        elif stream['codec_type'] == 'audio':
+            audios.append(stream_dic)
+        elif stream['codec_type'] == 'subtitle':
+            subtitles.append(stream_dic)
 
-    dic_return['streams'] = streams
+    dic_return['videos'] = videos
+    dic_return['audios'] = audios
+    dic_return['subtitles'] = subtitles
     return dic_return
 
 def audio(ficheiro):
