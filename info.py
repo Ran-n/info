@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2022/12/30 00:31:19.596872
+#+ Editado:	2022/12/30 00:38:43.083108
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -171,8 +171,9 @@ def main(fich: str) -> dict:
         datos['Título'] = tags['title']
     # Data creación
     if (tags and 'creation_time' in tags):
-        #datos['Data creación'] = ' '.join(str(tags['creation_time']).split('T'))
-        datos['Data creación'] = str(parser.parse(tags['creation_time']))
+        data = parser.parse(tags['creation_time'])
+        datos['Data creación'] = data.strftime('%Y-%m-%d %H:%M:') + str(float(data.strftime('%S.%f')))
+        del data
     # Cantidade de canles
     if (formato and 'nb_streams' in formato):
         datos['Cantidade de canles'] = formato['nb_streams']
