@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/11/09 20:59:20.693663
-#+ Editado:	2022/11/13 22:23:33.082968
+#+ Editado:	2022/12/17 18:42:23.865524
 # ------------------------------------------------------------------------------
 
 import sys
@@ -20,8 +20,8 @@ def video(ficheiro):
             'data': str(datetime.now()),
             'nome fich': pathlib.Path(info['format']['filename']).stem,
             'extension': pathlib.Path(info['format']['filename']).suffix,
-            'duracion': str(float(info['format']['duration'])) + ' s',
             'tamanho': info['format']['size'] + ' B',
+            'duracion': str(float(info['format']['duration'])) + ' s',
             'bit rate': info['format']['bit_rate'] + ' b/s',
     }
 
@@ -36,13 +36,18 @@ def video(ficheiro):
             if stream.get('width') and stream.get('height'): stream_dic['calidade'] = str(stream['width']) + 'x' + str(stream['height'])
             if stream.get('sample_aspect_ratio'): stream_dic['ratio aspecto'] = stream['sample_aspect_ratio']
             if stream.get('pix_fmt'): stream_dic['formato de pixel'] = stream['pix_fmt']
-            if stream.get('avg_frame_rate'): stream_dic['frame rate'] = str(round(eval(stream['avg_frame_rate']), 2)) + ' fps'
+            if stream.get('avg_frame_rate'):
+                numerador, divisor = [int(ele) for ele in stream['avg_frame_rate'].split('/')]
+                if (divisor == 0):
+                    stream_dic['frame rate'] = stream['avg_frame_rate'].split('/')[0] + ' fps'
+                else:
+                    stream_dic['frame rate'] = str(round(numerador/divisor, 2)) + ' fps'
 
         else:
             if stream.get('tags').get('language'): stream_dic['lingua'] = stream['tags']['language']
             if stream['codec_type'] == 'audio':
-                if stream.get('bit_rate'): stream_dic['bit rate'] = stream['bit_rate'] + ' b/s'
                 if stream.get('sample_rate'): stream_dic['sample rate'] = stream['sample_rate'] + ' Hz'
+                if stream.get('bit_rate'): stream_dic['bit rate'] = stream['bit_rate'] + ' b/s'
                 if stream.get('channel_layout'): stream_dic['canles'] = stream['channel_layout'].split('(')[0]
 
             elif stream['codec_type'] == 'subtitle':
@@ -53,6 +58,9 @@ def video(ficheiro):
     dic_return['streams'] = streams
     return dic_return
 
+def audio(ficheiro):
+    print(ffmpeg.probe(ficheiro))
+
 def erro_sufixo(ficheiro):
     return f'A extensión do ficheiro "{ficheiro}" non se atopa considerada.'
 
@@ -60,6 +68,7 @@ def main(ficheiro):
     extensions = {
         '.mkv': video,
         '.mp4': video,
+        '.flac': audio,
     }
 
     try:
