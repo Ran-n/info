@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2022/12/30 10:08:51.545521
+#+ Editado:	2022/12/30 10:10:37.473379
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -82,9 +82,9 @@ def canle(datos: dict, stream: dict) -> dict:
     # Lingua
     if (tags and 'language' in tags):
         nova_canle['Lingua'] = get_lingua(tags['language'])
-    # Calidade
+    # Resolución
     if (('width' in stream) and ('height' in stream)):
-        nova_canle['calidade'] = str(stream['width']) + 'x' + str(stream['height'])
+        nova_canle['Resolución'] = str(stream['width']) + 'x' + str(stream['height'])
     # Ratio aspecto sample
     if ('sample_aspect_ratio' in stream):
         nova_canle['Ratio aspecto sample'] = stream['sample_aspect_ratio']
