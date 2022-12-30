@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2022/12/30 01:24:42.761211
+#+ Editado:	2022/12/30 10:08:51.545521
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -123,7 +123,7 @@ def canle(datos: dict, stream: dict) -> dict:
     if (tags and 'DURATION' in tags):
         nova_canle['Duración'] = hms2s(tags['DURATION']) + ' s'
     if ('duration' in stream):
-        nova_canle['Duración'] = stream['duration'] + ' s'
+        nova_canle['Duración'] = str(float(stream['duration'])) + ' s'
 
     # disposition
 
