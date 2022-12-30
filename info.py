@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2022/12/30 00:38:43.083108
+#+ Editado:	2022/12/30 01:24:08.704831
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -76,6 +76,9 @@ def canle(datos: dict, stream: dict) -> dict:
     # Nome
     if (tags and 'title' in tags):
         nova_canle['Nome'] = tags['title']
+    # Comentario
+    if (tags and 'comment' in tags):
+        nova_canle['Comentario'] = tags['comment']
     # Lingua
     if (tags and 'language' in tags):
         nova_canle['Lingua'] = get_lingua(tags['language'])
@@ -116,11 +119,11 @@ def canle(datos: dict, stream: dict) -> dict:
     # Inicio
     if ('start_time' in stream):
         nova_canle['Inicio'] = str(float(stream['start_time'])) + ' s'
-    # Fin
+    # Duración
     if (tags and 'DURATION' in tags):
-        nova_canle['Fin'] = hms2s(tags['DURATION']) + ' s'
+        nova_canle['Duración'] = hms2s(tags['DURATION']) + ' s'
     if ('duration' in stream):
-        nova_canle['Fin'] = stream['duration'] + ' s'
+        nova_canle['Duración'] = stream['duration'] + ' s'
 
     # disposition
 
@@ -136,6 +139,7 @@ def main(fich: str) -> dict:
     datos = {
             'Data': str(datetime.now()),
     }
+    cancion = {}
 
     info = ffmpeg.probe(fich)
 
@@ -155,8 +159,13 @@ def main(fich: str) -> dict:
     if (formato and 'nb_streams' in formato):
         datos['Nome ficheiro'] = pathlib.Path(formato['filename']).stem
     # Extensión
-    if (formato and 'nb_streams' in formato):
         datos['Extensión'] = pathlib.Path(formato['filename']).suffix
+    # Formato
+    if (formato and 'format_name' in formato):
+        datos['Formato'] = formato['format_name']
+    # Formato nome
+    if (formato and 'nb_streams' in formato):
+        datos['Formato nome'] = formato['format_long_name']
     # Tamanho
     if (formato and 'nb_streams' in formato):
         datos['Tamanho'] = formato['size'] + ' B'
@@ -182,6 +191,43 @@ def main(fich: str) -> dict:
     if ('streams' in info):
         for stream in info['streams']:
             datos = canle(datos, stream)
+
+    # Album
+    if (tags and 'ALBUM' in tags):
+        cancion['Album'] = tags['ALBUM']
+    # Artista album
+    if (tags and 'album_artist' in tags):
+        cancion['Artista album'] = tags['album_artist']
+    # Disco
+    if (tags and 'disc' in tags):
+        cancion['Disco'] = tags['disc']
+    # /Discos
+    if (tags and 'DISCTOTAL' in tags):
+        cancion['Disco'] = cancion['Disco'] + '/' + tags['DISCTOTAL']
+    # Título
+    if (tags and 'TITLE' in tags):
+        cancion['Title'] = tags['TITLE']
+    # Artista
+    if (tags and 'ARTIST' in tags):
+        cancion['Artista'] = tags['ARTIST']
+    # Track
+    if (tags and 'track' in tags):
+        cancion['Track'] = tags['track']
+    # /Tracks
+    if (tags and 'TRACKTOTAL' in tags):
+        cancion['Track'] = cancion['Track'] + '/' + tags['TRACKTOTAL']
+    # CopyRight
+    if (tags and 'COPYRIGHT' in tags):
+        cancion['CopyRight'] = tags['COPYRIGHT']
+    # Data
+    if (tags and 'DATE' in tags):
+        cancion['Data'] = tags['DATE']
+
+
+    # Canción
+    if len(cancion.keys()) > 0:
+        datos['Canción'] = cancion
+
 
     return datos
 # ------------------------------------------------------------------------------
