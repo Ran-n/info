@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2022/12/30 10:14:10.419668
+#+ Editado:	2022/12/30 11:12:35.372427
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -234,7 +234,7 @@ def main(fich: str) -> dict:
         cancion['Pista'] = tags['track']
     # /Pistas
     if (tags and 'TRACKTOTAL' in tags):
-        cancion['Pista'] = cancion['Track'] + '/' + tags['TRACKTOTAL']
+        cancion['Pista'] = cancion['Pista'] + '/' + tags['TRACKTOTAL']
     # CopyRight
     if (tags and 'COPYRIGHT' in tags):
         cancion['CopyRight'] = tags['COPYRIGHT']
