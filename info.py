@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2022/12/30 10:10:37.473379
+#+ Editado:	2022/12/30 10:14:10.419668
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -20,19 +20,28 @@ def formato_lingua(lingua: Union[List[str], str]) -> str:
 
 def get_lingua(lingua: str) -> str:
     dic_linguas = {
-            'eng': ['en', 'Inglés'],
+            #'eng': ['en', 'Inglés'],
+            'eng': ['en', 'Ingles'],
             'ita': ['it', 'Italiano'],
-            'spa': ['cas', 'Castelán'],
-            'fre': ['fr', 'Francés'],
-            'jpn': ['ni', 'Xaponés'],
+            #'spa': ['cas', 'Castelán'],
+            'spa': ['cas', 'Castelan'],
+            #'fre': ['fr', 'Francés'],
+            'fre': ['fr', 'Frances'],
+            #'jpn': ['ni', 'Xaponés'],
+            'jpn': ['ni', 'Xapones'],
+            #'ger': ['de', 'Alemán'],
             'ger': ['de', 'Alemán'],
             'pol': ['pl', 'Polaco'],
-            'por': ['po', 'Portugués'],
+            #'por': ['po', 'Portugués'],
+            'por': ['po', 'Portugues'],
             'nor': ['no', 'Noruego'],
             'swe': ['sw', 'Sueco'],
-            'dut': ['nl', 'Neederlandés'],
-            'fin': ['sk', 'Finlandés'],
-            'dan': ['da', 'Danés']
+            #'dut': ['nl', 'Neederlandés'],
+            'dut': ['nl', 'Neederlandes'],
+            #'fin': ['sk', 'Finlandés'],
+            'fin': ['sk', 'Finlandes'],
+            #'dan': ['da', 'Danés']
+            'dan': ['da', 'Danes']
     }
 
     return formato_lingua(dic_linguas.get(lingua, 'ERRO: Engadir lingua'))
@@ -66,7 +75,8 @@ def canle(datos: dict, stream: dict) -> dict:
 
     # Posición
     if ('index' in stream):
-        nova_canle['Posición'] = stream['index'] + 1
+        #nova_canle['Posición'] = stream['index'] + 1
+        nova_canle['Posicion'] = stream['index'] + 1
     # Codec
     if ('codec_name' in stream):
         nova_canle['Codec'] = stream['codec_name']
@@ -84,7 +94,8 @@ def canle(datos: dict, stream: dict) -> dict:
         nova_canle['Lingua'] = get_lingua(tags['language'])
     # Resolución
     if (('width' in stream) and ('height' in stream)):
-        nova_canle['Resolución'] = str(stream['width']) + 'x' + str(stream['height'])
+        #nova_canle['Resolución'] = str(stream['width']) + 'x' + str(stream['height'])
+        nova_canle['Resolucion'] = str(stream['width']) + 'x' + str(stream['height'])
     # Ratio aspecto sample
     if ('sample_aspect_ratio' in stream):
         nova_canle['Ratio aspecto sample'] = stream['sample_aspect_ratio']
@@ -106,7 +117,8 @@ def canle(datos: dict, stream: dict) -> dict:
         nova_canle['Canles'] = " (".join(stream['channel_layout'].split('('))
     # Número canles
     if ('channels' in stream):
-        nova_canle['Número canles'] = stream['channels']
+        #nova_canle['Número canles'] = stream['channels']
+        nova_canle['Numero canles'] = stream['channels']
     # Sample Rate
     if ('sample_rate' in stream):
         nova_canle['Sample Rate'] = stream['sample_rate'] + ' Hz'
@@ -121,9 +133,11 @@ def canle(datos: dict, stream: dict) -> dict:
         nova_canle['Inicio'] = str(float(stream['start_time'])) + ' s'
     # Duración
     if (tags and 'DURATION' in tags):
-        nova_canle['Duración'] = hms2s(tags['DURATION']) + ' s'
+        #nova_canle['Duración'] = hms2s(tags['DURATION']) + ' s'
+        nova_canle['Duracion'] = hms2s(tags['DURATION']) + ' s'
     if ('duration' in stream):
-        nova_canle['Duración'] = str(float(stream['duration'])) + ' s'
+        #nova_canle['Duración'] = str(float(stream['duration'])) + ' s'
+        nova_canle['Duracion'] = str(float(stream['duration'])) + ' s'
 
     # disposition
 
@@ -159,7 +173,8 @@ def main(fich: str) -> dict:
     if (formato and 'nb_streams' in formato):
         datos['Nome ficheiro'] = pathlib.Path(formato['filename']).stem
     # Extensión
-        datos['Extensión'] = pathlib.Path(formato['filename']).suffix
+        #datos['Extensión'] = pathlib.Path(formato['filename']).suffix
+        datos['Extension'] = pathlib.Path(formato['filename']).suffix
     # Formato
     if (formato and 'format_name' in formato):
         datos['Formato'] = formato['format_name']
@@ -171,17 +186,20 @@ def main(fich: str) -> dict:
         datos['Tamanho'] = formato['size'] + ' B'
     # Duración
     if (formato and 'nb_streams' in formato):
-        datos['Duración'] = str(float(formato['duration'])) + ' s'
+        #datos['Duración'] = str(float(formato['duration'])) + ' s'
+        datos['Duracion'] = str(float(formato['duration'])) + ' s'
     # Bit Rate
     if (formato and 'nb_streams' in formato):
         datos['Bit Rate'] = formato['bit_rate'] + ' b/s'
     # Título
     if (tags and 'title' in tags):
-        datos['Título'] = tags['title']
+        #datos['Título'] = tags['title']
+        datos['Titulo'] = tags['title']
     # Data creación
     if (tags and 'creation_time' in tags):
         data = parser.parse(tags['creation_time'])
-        datos['Data creación'] = data.strftime('%Y-%m-%d %H:%M:') + str(float(data.strftime('%S.%f')))
+        #datos['Data creación'] = data.strftime('%Y-%m-%d %H:%M:') + str(float(data.strftime('%S.%f')))
+        datos['Data creacion'] = data.strftime('%Y-%m-%d %H:%M:') + str(float(data.strftime('%S.%f')))
         del data
     # Cantidade de canles
     if (formato and 'nb_streams' in formato):
@@ -206,16 +224,17 @@ def main(fich: str) -> dict:
         cancion['Disco'] = cancion['Disco'] + '/' + tags['DISCTOTAL']
     # Título
     if (tags and 'TITLE' in tags):
-        cancion['Title'] = tags['TITLE']
+        #cancion['Título'] = tags['TITLE']
+        cancion['Titulo'] = tags['TITLE']
     # Artista
     if (tags and 'ARTIST' in tags):
         cancion['Artista'] = tags['ARTIST']
-    # Track
+    # Pista
     if (tags and 'track' in tags):
-        cancion['Track'] = tags['track']
-    # /Tracks
+        cancion['Pista'] = tags['track']
+    # /Pistas
     if (tags and 'TRACKTOTAL' in tags):
-        cancion['Track'] = cancion['Track'] + '/' + tags['TRACKTOTAL']
+        cancion['Pista'] = cancion['Track'] + '/' + tags['TRACKTOTAL']
     # CopyRight
     if (tags and 'COPYRIGHT' in tags):
         cancion['CopyRight'] = tags['COPYRIGHT']
@@ -225,7 +244,8 @@ def main(fich: str) -> dict:
 
     # Canción
     if len(cancion.keys()) > 0:
-        datos['Canción'] = cancion
+        #datos['Canción'] = cancion
+        datos['Cancion'] = cancion
 
 
     return datos
