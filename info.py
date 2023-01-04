@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 19:00:11.589095
+#+ Editado:	2023/01/04 19:04:30.105195
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -52,14 +52,18 @@ def hms2s(tempo: str) -> str:
     return str(int(h)*60*60+int(m)*60+int(s))+'.'+ms
 
 def get_codec_types() -> dict:
-    codec_types= {
+    return {
             'video': 'videos',
             'audio': 'audios',
             'subtitle': 'subtitulos',
             'attachment': 'adxuntos',
     }
 
-    return codec_types
+def get_ignored_files() -> dict:
+    return [
+            '.txt',
+            '.info',
+    ]
 
 def get_codec(codec: str) -> Union[str, None]:
     codec_types = get_codec_types()
@@ -278,7 +282,8 @@ def main_aux(ficheiro: str, info_orixinal: bool):
         temp_path = pathlib.Path(ficheiro).glob('**/*')
         fichs = [x for x in temp_path if x.is_file()]
         for fich in fichs:
-            main_aux(fich, info_orixinal)
+            if (fich.suffix not in get_ignored_files()):
+                main_aux(fich, info_orixinal)
     else:
         if (info_orixinal):
             saida = ffmpeg.probe(ficheiro)
