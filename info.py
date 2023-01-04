@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 18:09:37.220520
+#+ Editado:	2023/01/04 19:00:11.589095
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -157,7 +157,7 @@ def canle(datos: dict, stream: dict) -> dict:
 
     return datos
 # ------------------------------------------------------------------------------
-def main(fich: str) -> dict:
+def get_info(fich: str) -> dict:
     datos = {
             'Data': str(datetime.now()),
     }
@@ -271,7 +271,28 @@ def main(fich: str) -> dict:
 
     return datos
 # ------------------------------------------------------------------------------
-if __name__ == "__main__":
+def main_aux(ficheiro: str, info_orixinal: bool):
+    print(ficheiro)
+    # se é un directorio
+    if (pathlib.Path(ficheiro).is_dir()):
+        temp_path = pathlib.Path(ficheiro).glob('**/*')
+        fichs = [x for x in temp_path if x.is_file()]
+        for fich in fichs:
+            main_aux(fich, info_orixinal)
+    else:
+        if (info_orixinal):
+            saida = ffmpeg.probe(ficheiro)
+        else:
+            saida = get_info(ficheiro)
+
+        if (type(saida) == str):
+            print(saida)
+        else:
+            jprint(saida)
+
+        print('----------------------------------------------------------')
+
+def main():
     MARCA_INFO_ORIXINAL = '.'
     # long or short info indicator xFCR
     info_orixinal = False
@@ -286,16 +307,9 @@ if __name__ == "__main__":
 
         print('----------------------------------------------------------')
         for ficheiro in ficheiros:
-            if (info_orixinal):
-                saida = ffmpeg.probe(ficheiro)
-            else:
-                saida = main(ficheiro)
+            main_aux(ficheiro, info_orixinal)
 
-            if (type(saida) == str):
-                print(saida)
-            else:
-                jprint(saida)
-
-            print('----------------------------------------------------------')
-
+# ------------------------------------------------------------------------------
+if __name__ == "__main__":
+    main()
 # ------------------------------------------------------------------------------
