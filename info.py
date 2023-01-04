@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 19:09:54.803439
+#+ Editado:	2023/01/04 19:14:43.660383
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -44,7 +44,7 @@ def get_lingua(lingua: str) -> str:
             'dan': ['da', 'Danes']
     }
 
-    return formato_lingua(dic_linguas.get(lingua, 'ERRO: Engadir lingua'))
+    return formato_lingua(dic_linguas.get(lingua, f"ERRO: Engadir lingua '{lingua}'"))
 
 def hms2s(tempo: str) -> str:
     h, m, s = tempo.split(':')
@@ -221,7 +221,8 @@ def get_info(fich: str) -> dict:
         datos['Cantidade de canles'] = formato['nb_streams']
 
     # Disposición das canles
-    datos['Disposición das canles'] = {}
+    #datos['Disposición das canles'] = {}
+    datos['Disposicion das canles'] = {}
 
     # streams
     if ('streams' in info):
