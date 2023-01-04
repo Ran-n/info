@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 19:32:54.816837
+#+ Editado:	2023/01/04 19:58:40.512122
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -30,7 +30,7 @@ def get_lingua(lingua: str) -> str:
             #'jpn': ['ni', 'Xaponés'],
             'jpn': ['ni', 'Xapones'],
             #'ger': ['de', 'Alemán'],
-            'ger': ['de', 'Alemán'],
+            'ger': ['de', 'Aleman'],
             'pol': ['pl', 'Polaco'],
             #'por': ['po', 'Portugués'],
             'por': ['po', 'Portugues'],
@@ -40,8 +40,32 @@ def get_lingua(lingua: str) -> str:
             'dut': ['nl', 'Neederlandes'],
             #'fin': ['sk', 'Finlandés'],
             'fin': ['sk', 'Finlandes'],
-            #'dan': ['da', 'Danés']
-            'dan': ['da', 'Danes']
+            #'dan': ['da', 'Danés'],
+            'dan': ['da', 'Danes'],
+            #'ara': ['da', 'Árabe'],
+            'ara': ['arabe', 'Arabe'],
+            #'cat': ['cat', 'Catalán'],
+            'cat': ['cat', 'Catalan'],
+            'cze': ['checo', 'Checo'],
+            'gre': ['grego', 'Grego'],
+            'baq': ['eu', 'Euskera'],
+            'fil': ['filipino', 'Filipino'],
+            'glg': ['gz', 'Galego'],
+            'heb': ['iv', 'Hebreo'],
+            'hrv': ['croata', 'Croata'],
+            #'hun': ['mn', 'Húngaro'],
+            'hun': ['mn', 'Hungaro'],
+            'ind': ['indonesio', 'Indonesio'],
+            'kor': ['ko', 'Koreano'],
+            'may': ['me', 'Malai'],
+            'nob': ['nobok', 'Noruego de libro'],
+            'rum': ['lr', 'Rumano'],
+            'rus': ['rus', 'Ruso'],
+            'tha': ['thai', 'Thai'],
+            'tur': ['tu', 'Turko'],
+            'ukr': ['uk', 'Ukraniano'],
+            'vie': ['vietnamita', 'Vietnamita'],
+            'chi': ['zh', 'Chinés'],
     }
 
     return formato_lingua(dic_linguas.get(lingua, f"ERRO: Engadir lingua '{lingua}'"))
