@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 17:00:11.064466
+#+ Editado:	2023/01/04 17:51:06.663575
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -51,7 +51,7 @@ def hms2s(tempo: str) -> str:
     s, ms = str(float(s)).split('.')
     return str(int(h)*60*60+int(m)*60+int(s))+'.'+ms
 
-def get_codec(codec: str) -> Union[str, None]:
+def get_codec_types() -> dict:
     codec_types= {
             'video': 'videos',
             'audio': 'audios',
@@ -59,6 +59,10 @@ def get_codec(codec: str) -> Union[str, None]:
             'attachment': 'adxuntos',
     }
 
+    return codec_types
+
+def get_codec(codec: str) -> Union[str, None]:
+    codec_types = get_codec_types()
     try:
         return codec_types[codec]
     except KeyError as e:
@@ -158,6 +162,7 @@ def main(fich: str) -> dict:
             'Data': str(datetime.now()),
     }
     cancion = {}
+    resumo = {}
 
     info = ffmpeg.probe(fich)
 
@@ -251,6 +256,12 @@ def main(fich: str) -> dict:
         #datos['Canción'] = cancion
         datos['Cancion'] = cancion
 
+    # Resumo
+    for ele in get_codec_types().values():
+        if ele in datos:
+            resumo[ele] = len(datos[ele])
+    if (len(resumo.keys()) > 0):
+        datos['Resumo'] = resumo
 
     return datos
 # ------------------------------------------------------------------------------
