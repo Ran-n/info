@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2022/12/30 11:12:35.372427
+#+ Editado:	2023/01/04 17:00:11.064466
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -56,6 +56,7 @@ def get_codec(codec: str) -> Union[str, None]:
             'video': 'videos',
             'audio': 'audios',
             'subtitle': 'subtitulos',
+            'attachment': 'adxuntos',
     }
 
     try:
@@ -86,6 +87,9 @@ def canle(datos: dict, stream: dict) -> dict:
     # Nome
     if (tags and 'title' in tags):
         nova_canle['Nome'] = tags['title']
+    # Nome Ficheiro
+    if (tags and 'filename' in tags):
+        nova_canle['Nome Ficheiro'] = tags['filename']
     # Comentario
     if (tags and 'comment' in tags):
         nova_canle['Comentario'] = tags['comment']
