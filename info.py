@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 18:09:04.708970
+#+ Editado:	2023/01/04 18:09:37.220520
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -273,9 +273,8 @@ def main(fich: str) -> dict:
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
     MARCA_INFO_ORIXINAL = '.'
+    # long or short info indicator xFCR
     info_orixinal = False
-
-    # long or short info
 
     if ((len(sys.argv) < 2) and (sys.argv[1] != MARCA_INFO_ORIXINAL)):
         print('Mete argumento/s')
