@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 19:14:43.660383
+#+ Editado:	2023/01/04 19:32:54.816837
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -271,9 +271,11 @@ def get_info(fich: str) -> dict:
         if ele in datos:
             resumo[ele] = len(datos[ele])
     if (len(resumo.keys()) > 0):
-        datos['Disposición das canles'] = resumo
+        #datos['Disposición das canles'] = resumo
+        datos['Disposicion das canles'] = resumo
     else:
-        del datos['Disposición das canles']
+        #del datos['Disposición das canles']
+        del datos['Disposicion das canles']
 
 
     return datos
