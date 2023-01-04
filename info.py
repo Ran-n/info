@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 17:53:41.965954
+#+ Editado:	2023/01/04 18:09:04.708970
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -272,18 +272,31 @@ def main(fich: str) -> dict:
     return datos
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
+    MARCA_INFO_ORIXINAL = '.'
+    info_orixinal = False
+
     # long or short info
 
-    # backdoor para mostrar o orixinal fácilmente
-    if (len(sys.argv) == 3):
-        jprint(ffmpeg.probe(sys.argv[1]))
-    # comprobar que mete argumento a ler
-    elif (len(sys.argv) > 1):
-        saida = main(sys.argv[1])
-        if (type(saida) == str):
-            print(saida)
-        else:
-            jprint(saida)
+    if ((len(sys.argv) < 2) and (sys.argv[1] != MARCA_INFO_ORIXINAL)):
+        print('Mete argumento/s')
     else:
-        print('Mete argumento')
+        ficheiros = sys.argv[1:]
+        if (ficheiros[-1] == MARCA_INFO_ORIXINAL):
+            ficheiros.pop()
+            info_orixinal = True
+
+        print('----------------------------------------------------------')
+        for ficheiro in ficheiros:
+            if (info_orixinal):
+                saida = ffmpeg.probe(ficheiro)
+            else:
+                saida = main(ficheiro)
+
+            if (type(saida) == str):
+                print(saida)
+            else:
+                jprint(saida)
+
+            print('----------------------------------------------------------')
+
 # ------------------------------------------------------------------------------
