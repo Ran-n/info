@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 17:51:06.663575
+#+ Editado:	2023/01/04 17:53:41.965954
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -214,6 +214,9 @@ def main(fich: str) -> dict:
     if (formato and 'nb_streams' in formato):
         datos['Cantidade de canles'] = formato['nb_streams']
 
+    # Disposición das canles
+    datos['Disposición das canles'] = {}
+
     # streams
     if ('streams' in info):
         for stream in info['streams']:
@@ -256,12 +259,15 @@ def main(fich: str) -> dict:
         #datos['Canción'] = cancion
         datos['Cancion'] = cancion
 
-    # Resumo
+    # Disposición das canles
     for ele in get_codec_types().values():
         if ele in datos:
             resumo[ele] = len(datos[ele])
     if (len(resumo.keys()) > 0):
-        datos['Resumo'] = resumo
+        datos['Disposición das canles'] = resumo
+    else:
+        del datos['Disposición das canles']
+
 
     return datos
 # ------------------------------------------------------------------------------
