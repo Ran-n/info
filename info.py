@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/12/29 01:43:44.566474
-#+ Editado:	2023/01/04 19:04:30.105195
+#+ Editado:	2023/01/04 19:09:54.803439
 # ------------------------------------------------------------------------------
 import sys
 import ffmpeg
@@ -63,6 +63,8 @@ def get_ignored_files() -> dict:
     return [
             '.txt',
             '.info',
+            '.jpg',
+            '.png',
     ]
 
 def get_codec(codec: str) -> Union[str, None]:
@@ -281,7 +283,7 @@ def main_aux(ficheiro: str, info_orixinal: bool):
     if (pathlib.Path(ficheiro).is_dir()):
         temp_path = pathlib.Path(ficheiro).glob('**/*')
         fichs = [x for x in temp_path if x.is_file()]
-        for fich in fichs:
+        for fich in fichs[::-1]:
             if (fich.suffix not in get_ignored_files()):
                 main_aux(fich, info_orixinal)
     else:
@@ -311,9 +313,8 @@ def main():
             info_orixinal = True
 
         print('----------------------------------------------------------')
-        for ficheiro in ficheiros:
+        for ficheiro in ficheiros[::-1]:
             main_aux(ficheiro, info_orixinal)
-
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
     main()
